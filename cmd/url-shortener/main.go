@@ -6,6 +6,8 @@ import (
 	"log/slog"
 	"os"
 	"url-shortener/internal/config"
+	"url-shortener/internal/lib/logger"
+	"url-shortener/internal/storage/sqlite"
 
 	"github.com/joho/godotenv"
 )
@@ -53,7 +55,13 @@ func main() {
 	log.Info("starting app", slog.String("env", cfg.Env))
 	log.Debug("debug messages are enabled")
 
-	// TODO: init storage - sqlite3
+	// init storage
+	storage, err := sqlite.New(cfg.StoragePath)
+	if err != nil {
+		log.Error("failed to init storage", logger.Err(err))
+		os.Exit(1)
+	}
+	_ = storage
 
 	// TODO: init router - chi, chi render
 
