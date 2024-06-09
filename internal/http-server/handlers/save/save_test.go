@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
+	resp "url-shortener/internal/http-server/handlers"
 	"url-shortener/internal/http-server/handlers/save/mocks"
 	"url-shortener/internal/lib/logger/slogdiscard"
 )
@@ -83,7 +84,7 @@ func TestSaveHandler(t *testing.T) {
 
 			body := rr.Body.String()
 
-			var resp Response
+			var resp resp.Response
 
 			require.NoError(t, json.Unmarshal([]byte(body), &resp))
 
