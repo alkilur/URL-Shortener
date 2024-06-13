@@ -7,3 +7,5 @@ http_server:
   address: "localhost:8082"
   timeoit: 4s         # время на чтение запроса и отправку ответа
   idle_timeout: 60s   # время жизни соединения с клиентом
+  user: "admin"
+  password: "admin123!"
