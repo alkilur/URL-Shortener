@@ -1,9 +1,6 @@
-package redirect_test
+package redirect
 
 import (
-	"errors"
-	"fmt"
-	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -11,31 +8,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"url-shortener/internal/http-server/handlers/redirect"
 	"url-shortener/internal/http-server/handlers/redirect/mocks"
 	"url-shortener/internal/lib/logger/slogdiscard"
 )
-
-func GetRedirect(url string) (string, error) {
-
-	client := &http.Client{
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			return http.ErrUseLastResponse
-		},
-	}
-
-	resp, err := client.Get(url)
-	if err != nil {
-		return "", err
-	}
-	defer func() { _ = resp.Body.Close() }()
-
-	if resp.StatusCode != http.StatusFound {
-		return "", fmt.Errorf("%w: %d", errors.New("invalid status code"), resp.StatusCode)
-	}
-
-	return resp.Header.Get("Location"), nil
-}
 
 func TestRedirectHandler(t *testing.T) {
 	cases := []struct {
@@ -62,7 +37,7 @@ func TestRedirectHandler(t *testing.T) {
 			}
 
 			r := chi.NewRouter()
-			r.Get("/{alias}", redirect.NewRedirect(slogdiscard.NewDiscardLogger(), urlGetterMock))
+			r.Get("/{alias}", NewRedirect(slogdiscard.NewDiscardLogger(), urlGetterMock))
 
 			ts := httptest.NewServer(r)
 			defer ts.Close()

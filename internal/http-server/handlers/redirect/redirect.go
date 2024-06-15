@@ -2,6 +2,7 @@ package redirect
 
 import (
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 
@@ -17,6 +18,27 @@ import (
 //go:generate go run github.com/vektra/mockery/v2@v2.43.2 --name=URLGetter
 type URLGetter interface {
 	GetURL(alias string) (string, error)
+}
+
+func GetRedirect(url string) (string, error) {
+
+	client := &http.Client{
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
+
+	resp, err := client.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer func() { _ = resp.Body.Close() }()
+
+	if resp.StatusCode != http.StatusFound {
+		return "", fmt.Errorf("%w: %d", errors.New("invalid status code"), resp.StatusCode)
+	}
+
+	return resp.Header.Get("Location"), nil
 }
 
 func NewRedirect(log *slog.Logger, urlGetter URLGetter) http.HandlerFunc {
