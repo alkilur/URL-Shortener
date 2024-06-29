@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -16,7 +15,6 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/joho/godotenv"
 )
 
 const (
@@ -44,12 +42,6 @@ func setupLogger(env string) *slog.Logger {
 	}
 
 	return log
-}
-
-func init() {
-	if err := godotenv.Load("../../.env"); err != nil {
-		log.Fatal(err)
-	}
 }
 
 func main() {
