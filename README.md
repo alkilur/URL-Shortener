@@ -40,4 +40,4 @@ docker run -d -p 8082:8082 url-shortener
 ```
 
 #
-**original idea @JustSkiv**
+**original idea [@JustSkiv](https://github.com/JustSkiv)**
